@@ -84,7 +84,8 @@ grafico_2013 <-
   guides(fill = FALSE) + 
   geom_text(stat='count',
             aes(label = paste(round((..count..)/sum(..count..)*100), "%")),
-            vjust=-0.5, size=2.5) + 
+            vjust=-0.5, 
+            size = 3.5) + 
   theme_bw()+
   theme(axis.ticks.x = element_blank(),
         axis.ticks.y = element_blank(),
@@ -101,8 +102,12 @@ grafico_2018 <-
   labs(
     caption = "Año 2018",
     x = "Respuesta"
-  ) + guides(fill=FALSE) + 
-  geom_text(stat='count',aes(label = paste(round((..count..)/sum(..count..)*100), "%")), vjust=-0.5, size=2.5) +
+  ) + 
+  guides(fill=FALSE) + 
+  geom_text(stat='count',
+            aes(label = paste(round((..count..)/sum(..count..)*100), "%")), 
+            vjust=-0.5, 
+            size = 3.5 ) +
   theme_bw()+
   theme(axis.ticks.x = element_blank(),
         axis.ticks.y = element_blank(),
