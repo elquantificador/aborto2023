@@ -1,0 +1,81 @@
+---
+title: 'Revisitando el aborto: ¿qué piensan los ecuatorianos?'
+author: "Joyce Sarmiento"
+date: "Marzo 2023"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, echo = F}
+knitr::opts_chunk$set(echo = F)
+```
+El aborto se ha vuelto un tema muy recurrente en el país en los ultimos años. El 28 de abril del 2021 se vivió un hito en la región cuando la Corte Constitucional del Ecuador dió paso a la despenalización del aborto en casos de violación, siendo uno de los primeros países en hacerlo en la región. Posteriormente, el 17 de febrero del actual año, la Asamblea Nacional aprobó ese cambio en el Codigo Orgánico Penal Integral (COIP), pero el 12 de marzo, el presidente Guillermo Lasso vetó parcialmente ese proyecto de ley y se constituyó una version limitada pero de todas formas más exhaustiva del aborto legal por violación en el país. El proceso de despenalización que comenzó en abril 2021 despertó muchos ánimos, por lo que es clave preguntarse una vez más más de dos años después que El Quantificador analizó esta situación, *¿qué es lo que realmente piensan los ecuatorianos sobre el aborto?*
+
+Tomando en cuenta la situación actual, recordemos que en el 2020 El Quantificador ya exploró este tema en otro [artículo](https://elquantificador.org/post/valores/los-ecuatorianos-aprueban-el-aborto/), donde se utilizó la Encuesta Mundial de Valores o World Values Survey (WVS), específicamente la encuesta que se realizo en el 2013 en Ecuador. Actualmente podemos encontrar la encuesta realizada en 2018 y así podemos actualizar la respuesta a la pregunta planteada y adicionalmente se puede aumentar la rigurosidad del análisis con la nueva ronda de la encuesta.
+
+Comenzaremos realizando una comparación entre las respuestas del 2013 con las respuestas del 2018 para observar el cambio ocurrido. Adicionalmente realizaremos un analisis a las respuestas por el sexo del encuestado, un factor que no se tomó en cuenta en el anterior artículo y tambien un análisis para los factores de nivel educativo, edad y religión, manteniendo la desagregación a nivel de sexo. 
+
+Para facilitar los análisis, se ha eliminado las respuestas en donde se indica que el encuestado no conoce el tema o no tiene una postura, además de los que no respondieron la pregunta. Así entonces se utiliza una variable generada aquí, que divide las respuestas en "Justifica" y "No justifica". Originalmente, las respuestas van del de 1 a 10, siendo 1 que nunca justifica y 10 que siempre justifica. En el presente análisis, entre 1 al 6 seran considerados como "No justifica" el aborto, mientras que las respuestas entre 7 a 10 seran consideradas como "Justifica".
+
+```{r}
+knitr::include_graphics("../images/fig1.png")
+```
+
+En el gráfico observamos un aumento del porcentaje de las personas que justifican el aborto, siendo una diferencia de 5% entre ambos años. Los que no justifican el aborto pasaron de ser 94% a 89% en 5 años (entre el 2013 al 2018), mientras que los que justican el aborto aumentaron de 6% a 11%. El aumento existe, pero es casi neglible: sería erróneo creer que la decisión de la corte constitucional responde a menor tabú sobre este tema en la población. 
+
+Ahora que hemos visto que cambio ha pasado el país con respecto al pensamiento sobre el aborto, revisemos si existe un cambio con los factores ya mencionados, comenzando con el factor principal sobre el sexo de la persona. El análisis se lo realiza con respecto al año 2018. 
+
+## Factores que afectan la justificación al aborto
+
+El primer factor que revisaremos y uno que mantendremos como desagregación en el análisis de otros factores de importancia es el sexo del encuestado. Dividimos la población entre hombres y mujeres y revisaremos que contestaron en la pregunta anteriormente mencionada sobre justificación al aborto. 
+
+```{r}
+knitr::include_graphics("../images/fig2.png")
+```
+
+En el gráfico, podemos observar que el 90,67% de las mujeres no justifican el aborto, mientras que de los hombres es el 86,8%. En ambos grupos la mayoria no justifica el aborto, sin embargo, en este caso las mujeres marginalmente lo desaprueban más.
+
+Ahora, revisaremos el factor de nivel de educación que esta dividido en tres: Inferior, Medio y Superior. Ese factor lo analizaremos separando a la poblacion entre hombres y mujeres. 
+
+```{r}
+knitr::include_graphics("../images/fig3.png")
+```
+
+En el grafico comparativo entre el nivel educativo de los hombres no hay una diferencia significativa excepto por el nivel inferior de eduación, siendo este el que presenta el mayor porcentaje que no justifica el aborto. Por otro lado, el gráfico para encuestadas mujeres no presenta ninguna diferencia significativa en el porcentaj de justificación del aborto. Con esto, podemos decir que el nivel educativo no es un factor decisivo en la justificación del aborto.
+
+A continuación se revisa la edad de los encuestados, dividiendo en 6 grupos: de 16 a 24 años, de 25 a 34 años, de 35 a 44 años, de 45 a 54 años, de 55 a 64 años y mayores a 65 años. Se desagrega por sexo del encuestado, al igual que en los gráficos anteriores.
+
+```{r}
+knitr::include_graphics("../images/fig4.png")
+```
+
+El gráfico comparativo dividido por grupo etario en el caso de hombres nos muestra una variación algo significativa entre los grupos, siendo el menor porcentaje de los que no justifican el aborto el grupo de 45 a 54 años de edad con 82.19% y el mayor porcentaje de los que no justifican son el grupo de hombres mayores a 65 años con 93.02%. Los demás grupos tienen porcentajes similares aunque de todas formas se nota una diferencia marginal entre ellos. En el gráfico comparativo dividido por las edades de las mujeres podemos observar que no hay una variación significativa, excepto por el grupo de 25 a 34 años que es el menor porcentaje con 87.73%, mientras que los demas grupos se mantienen con un porcentaje mayor a 90%. Con estos resultados, es sensible creer que la edad si puede ser un factor determinante de la justificación al aborto. 
+El último factor que se analizará sera la religión de los encuestados. Se consideran las religiones que existen el país o que son mayoría, incluyendo seis categorías: No creyente, Catolico, Protestante, Ortodoxo, Otros Cristianos y Otros. Se mantiene la desagregación por sexo. 
+
+```{r}
+knitr::include_graphics("../images/fig5.png")
+```
+
+En el grafico dividido por religión de los hombres, se encuentra mucha heterogeneidad. Podemos observar una mayor diferencia en dos grupos: el grupo de otras religiones se mantiene con el menor porcentaje de no justificación con un 60% que no lo aprueba, mientras que el grupo de los protestantes se mantiene con un sorprendente 100% que no justifica. Además, podemos observar que los demás grupos (otros cristianos, catolicos y no creyentes) tienen porcentajes similares que se mantienen entre el 80% a 90%. 
+
+En el gráfico dividido por religión de mujeres, los grupos tienen porcentajes de no justificación más similares entre sí. Podemos observar que los grupos de otras religiones, ortodoxo y protestantes tienen un 100% que no justifican el aborto, mientas que los otros grupos (otras cristianas, católicas y no creyentes) tienen porcentajes similares que no justifican el aborto, siendo el menor porcentaje el grupo de católicas. Con este análisis, podemos observar que la religión probablemente se puede considerar como un factor importante sobre si justifican o no justican el aborto, tomando en cuenta las diferentes situaciones que existen entre hombres y mujeres para este factor.
+
+## Observaciones Finales
+
+De todos los factores estudiados, podemos encontrar que algunos factores siguen la tendencia de la WVS de 2013, sin embargo, existen algunos factores que han cambiado respecto a ese año. Podemos concluir que el nivel educativo no tiene significancia en el tema, por otro lado, las edades pueden ser consideradas un factor importante. El hallazgo más importante puede considerarse la religión y su efecto en la justificación, tomando en cuenta la diferencia entre hombres y mujeres. Los hombres varían mucho a lo largo de grupos religiosos en su porcentaje de justificación, siendo aquellos que pertenencen a religiones no dominantes en el pais. Las mujeres muestran más homogeneidad a lo largo de grupos religiosos. 
+
+En conclusión, aunque evidenciamos algunos cambios en actitudes públicas frente al aborto, no se evidencia un cambio radical en pensamiento entre 2013 y 2018. Esto tiene sentido puesto que es común observar que las actitudes sociales toman mucho tiempo en cambiar. La encuesta utilizada para este articulo fue realizada en el 2018 se podría esperar que no sea totalmente fiel a la actualidad de nuestro país. El análisis de la encuesta de 2018 nos muestra las actitudes que preceden la decisión de la Corte Constitucional, sin embargo, no podemos predecir que estas actitudes se mantuvieron iguales después del evento, de hecho, probablemente cambiaron. Un análisis de las próximas rondas de la WVS sería muy útil para poder inferir el efecto de la decisión en el cambio, pero es complicado descomponer el efecto entre lo que causó la decisión de la CC y lo que pudo haber causado la pandemia del COVID-19. En próximas entregas, El Quantificador continuará realizando seguimiento a este tema. 
+
+*Todos los cálculos y gráficos presentes en este artículo se encuentran en el [repositorio de GitHub del artículo](https://github.com/joyceliss/LIDE_ESPOL_Joyce_Sarmiento). En el perfil de la misma encontrarán datos de contacto para cualquier comentario o pregunta sobre éste artículo.*
+
+## Referencias
+* «ABORTO: ¿qué piensan los ecuatorianos?», 2 de noviembre de 2020. https://elquantificador.org/post/valores/los-ecuatorianos-aprueban-el-aborto/.
+* CNN. «El presidente de Ecuador veta parcialmente proyecto sobre aborto en caso de violación», 16 de marzo de 2022. https://cnnespanol.cnn.com/2022/03/16/ecuador-guillermo-lasso-veta-parcialmente-proyecto-aborto-violacion-orix/.
+* Welle (www.dw.com), Deutsche. «Ecuador despenaliza el aborto por violación | DW | 28.04.2021». DW.COM. Accedido 1 de abril de 2022. https://www.dw.com/es/ecuador-despenaliza-el-aborto-por-violaci%C3%B3n/a-57368524.
+* France 24. «Ecuador: el presidente Lasso veta parcialmente el proyecto de ley de aborto en casos de violación», 16 de marzo de 2022. https://www.france24.com/es/am%C3%A9rica-latina/20220316-ecuador-ley-aborto-lasso-femisnismo.
+* BBC News Mundo. «La Asamblea Nacional de Ecuador aprueba el aborto para casos de violación en determinados plazos». Accedido 1 de abril de 2022. https://www.bbc.com/mundo/noticias-america-latina-60424720.
+
+
+

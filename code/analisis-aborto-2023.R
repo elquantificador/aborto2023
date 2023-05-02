@@ -1,0 +1,332 @@
+# Análisis Aborto 2023
+# Joyce Sarmiento
+
+# Librerías ---------------------------------------------------------------
+
+if(!require(tidyverse)) install.packages("tidyverse", repos = "http://cran.us.r-project.org")
+if(!require(readxl)) install.packages("readxl", repos = "http://cran.us.r-project.org")
+if(!require(ggplot2)) install.packages("ggplot2", repos = "http://cran.us.r-project.org")
+if(!require(patchwork)) install.packages("patchwork", repos = "http://cran.us.r-project.org")
+
+# Datos -------------------------------------------------------------------
+
+# Le damos un nombre al url
+url <- "https://github.com/joyceliss/LIDE_ESPOL_Joyce_Sarmiento/raw/main/Base%20de%20datos.zip"
+# Creamos un directorio temporal
+td <- tempdir()
+# Creamos una carpeta temporal
+tf <- tempfile(tmpdir=td, fileext = ".zip")
+# Descargamos los discap en la carpeta temporal
+download.file(url,tf)
+
+
+# Obtenemos el nombre del archivo dentro del archivo zip, lo descomprimimos (unzip), obtenemos el nombre del 
+# parche, y finalmente lo cargamos
+WVs.f.name <- unzip(tf, list=TRUE)[1,1]
+WV6.f.name <- unzip(tf, list=TRUE)[2,1]
+
+unzip(tf, files=WVs.f.name, exdir=td, overwrite=TRUE)
+unzip(tf, files=WV6.f.name, exdir=td, overwrite=TRUE)
+
+WVs.f.path <- file.path(td, WVs.f.name)
+WV6.f.path <- file.path(td, WV6.f.name)
+
+data2018 <- read_excel(WVs.f.path)
+data2013 <- read_excel(WV6.f.path)
+
+# Análisis ----------------------------------------------------------------
+
+sexo <- data2018$`Q260: Sex`
+edad <- data2018$`Q262: Age`
+edad_intervalos <- data2018$`X003R: Age recoded (6 intervals)`
+nivel_educativo <- data2018$`Q275R: Highest educational level: Respondent (recoded into 3 groups)`
+religion <- data2018$`Q289: Religious denominations - major groups`
+aborto2018 <- data2018$`Q184: Justifiable: Abortion`
+aborto2013 <- data2013$`V204: Justifiable: Abortion`
+
+data_aborto2018 <- data.frame(sexo, edad, edad_intervalos, nivel_educativo, religion, aborto2018)
+data_aborto2013 <- data.frame(aborto2013)
+
+data_aborto2018 <- data_aborto2018 %>%
+  filter(aborto2018 >= 1, nivel_educativo >= 0, religion >= 0)
+R = length(data_aborto2018$aborto2018)
+acumulador2018 <- rep(0,R)
+
+for (i in 1:R) {
+  if ((data_aborto2018$aborto2018[i] <= 6) & (data_aborto2018$aborto2018[i] >=1)) {acumulador2018[i] <- 'No justifica'}
+  else if (data_aborto2018$aborto2018[i] >= 7 ) {acumulador2018[i] <- 'Justifica'}
+  else if (data_aborto2018$aborto2018[i] < 1) {acumulador2018[i] <- 'No Aplica'} 
+}
+data_aborto2018$abortoDummy2018 <- unlist(acumulador2018)
+R = length(aborto2013)
+acumulador2013 <- rep(0,R)
+for (i in 1:R) {
+  if ((aborto2013[i] <= 6) & (aborto2013[i] >=1)) {acumulador2013[i] <- 'No justifica'}
+  else if (aborto2013[i] >= 7 ) {acumulador2013[i] <- 'Justifica'}
+  else if (aborto2013[i] < 1) {acumulador2013[i] <- 'No Aplica'} 
+}
+data_aborto2013$abortoDummy2013 <- unlist(acumulador2013)
+
+# Gráficos ----------------------------------------------------------------
+
+# 2013
+
+grafico_2013 <-
+  data_aborto2013 %>% 
+  ggplot(aes(x = abortoDummy2013, 
+             y = (..count..)/sum(..count..), 
+             fill = abortoDummy2013)) + 
+  geom_bar() + 
+  labs(
+    caption = "Año 2013",
+    x = "Respuesta"
+  ) + 
+  guides(fill = FALSE) + 
+  geom_text(stat='count',
+            aes(label = paste(round((..count..)/sum(..count..)*100), "%")),
+            vjust=-0.5, size=2.5) + 
+  theme_bw()+
+  theme(axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.title = element_blank(),
+        axis.text.y = element_blank(),
+        panel.grid = element_blank(),
+        plot.caption = element_text(hjust = 0.5))
+
+# 2018
+
+grafico_2018 <-
+  ggplot(data_aborto2018, aes(x = abortoDummy2018, y = (..count..)/sum(..count..), fill = abortoDummy2018)) + 
+  geom_bar() + 
+  labs(
+    caption = "Año 2018",
+    x = "Respuesta"
+  ) + guides(fill=FALSE) + 
+  geom_text(stat='count',aes(label = paste(round((..count..)/sum(..count..)*100), "%")), vjust=-0.5, size=2.5) +
+  theme_bw()+
+  theme(axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.title = element_blank(),
+        axis.text.y = element_blank(),
+        panel.grid = element_blank(),
+        plot.caption = element_text(hjust = 0.5))
+
+grafico_2013 + grafico_2018 +
+  plot_layout(ncol = 2) +
+  plot_annotation(title = 'Justificación del Aborto en Ecuador',
+                  subtitle = 'Datos de la WVS',
+                  caption = 'Encuesta Mundial de Valores, rondas 2013 y 2018 en Ecuador.')
+
+ggsave("images/fig1.png", device = "png", width = 12.5, height = 7, dpi = 900)
+
+sexo_labs <- c("Hombre", "Mujer")
+
+names(sexo_labs) <- c("1", "2")
+
+# prop.table(table(data_aborto2018 %>% 
+#                  select(abortoDummy2018, sexo)), 
+#            margin = 2) %>% 
+#   as.data.frame() %>% 
+#   filter(abortoDummy2018 == "No justifica")
+
+# Figura 2
+
+fig2 <-
+prop.table(table(data_aborto2018 %>% select(abortoDummy2018, sexo)), margin = 2) %>% 
+  as.data.frame() %>% 
+  filter(abortoDummy2018 == "No justifica") %>% 
+  ggplot(aes(x = sexo, y = Freq, fill = abortoDummy2018)) + 
+  geom_bar(position = "stack", stat = "identity") +
+  coord_flip() +
+  geom_text(aes(label = paste(round(Freq * 100, 2), "%")), 
+            size = 4,
+            hjust = 2) + 
+  scale_x_discrete(labels = sexo_labs) + 
+  theme_bw() + 
+  theme(axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.text.x = element_blank(),
+        panel.grid = element_blank(),
+        plot.caption = element_text(hjust = 0.5),
+        legend.position = 'none') + 
+  labs(
+    x = 'Sexo',
+    y = '% de la población',
+    title = 'Justificación del aborto por sexo del encuestado',
+    subtitle = 'Encuestra Mundial de Valores 2018'
+  )
+
+ggsave("images/fig2.png", device = "png", width = 12.5, height = 7, dpi = 900)
+
+data_aborto2018_Man <- data_aborto2018 %>%
+  filter(sexo == 1)
+data_aborto2018_Woman <- data_aborto2018 %>%
+  filter(sexo == 2)
+
+nivel_educativo_labs <- c("Inferior", "Medio", "Superior")
+names(nivel_educativo_labs) <- c("1", "2", "3")
+
+# prop.table(table(data_aborto2018_Man %>% select(abortoDummy2018, nivel_educativo)), margin = 2) %>% as.data.frame() %>% filter(abortoDummy2018 == "No justifica")
+
+fig3a <-
+prop.table(table(data_aborto2018_Man %>% select(abortoDummy2018, nivel_educativo)), margin = 2) %>%
+  as.data.frame() %>% 
+  filter(abortoDummy2018 == "No justifica") %>% 
+  ggplot(aes(x = nivel_educativo, y = Freq, fill = abortoDummy2018)) + 
+  geom_bar(position = "stack", stat = "identity") + 
+  geom_text(aes(label = paste(round(Freq * 100, 2), "%")), 
+            size = 4,
+            hjust = 2) + 
+  scale_x_discrete(labels = nivel_educativo_labs) + 
+  theme_bw() + 
+  theme(axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.text.x = element_blank(),
+        panel.grid = element_blank(),
+        plot.caption = element_text(hjust = 0.5),
+        legend.position = 'none') + 
+  labs(title = 'Encuestados hombres',
+       x = 'Nivel educativo', 
+       y = '% del Total') +
+  coord_flip()
+
+# prop.table(table(data_aborto2018_Woman %>% select(abortoDummy2018, nivel_educativo)), margin = 2) %>% as.data.frame() %>% filter(abortoDummy2018 == "No justifica")
+
+fig3b <-
+prop.table(table(data_aborto2018_Woman %>% select(abortoDummy2018, nivel_educativo)), margin = 2) %>%
+  as.data.frame() %>% 
+  filter(abortoDummy2018 == "No justifica") %>% 
+  ggplot(aes(x = nivel_educativo, y = Freq, fill = abortoDummy2018)) + 
+  geom_bar(position = "stack", stat = "identity") + 
+  labs(title = 'Encuestadas mujeres',
+       x = 'Nivel educativo', 
+       y = '% del Total') +
+  geom_text(aes(label = paste(round(Freq * 100, 2), "%")), 
+            size = 4,
+            hjust = 2) + 
+  scale_x_discrete(labels = nivel_educativo_labs) + 
+  theme_bw() + 
+  theme(axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.text.x = element_blank(),
+        panel.grid = element_blank(),
+        plot.caption = element_text(hjust = 0.5),
+        legend.position = 'none') + 
+  coord_flip()
+
+fig3a + fig3b +
+  plot_layout(ncol = 2) +
+  plot_annotation(title = 'No justificación del aborto por nivel educativo',
+                  subtitle = 'Datos de la WVS',
+                  caption = 'Encuesta Mundial de Valores, ronda 2018 en el Ecuador.')
+
+ggsave("images/fig3.png", device = "png", width = 12.5, height = 7, dpi = 900)
+
+edad_intervalos_labs <- 
+  c("16 a 24 años", "25 a 34 años", "35 a 44 años", "45 a 54 años", "55 a 64 años", "Mayor a 65 años")
+names(edad_intervalos_labs) <- 
+  c("1", "2", "3", "4", "5", "6")
+
+# prop.table(table(data_aborto2018_Man %>% select(abortoDummy2018, edad_intervalos)), margin = 2) %>% as.data.frame() %>% filter(abortoDummy2018 == "No justifica")
+
+fig4a <-
+prop.table(table(data_aborto2018_Man %>% select(abortoDummy2018, edad_intervalos)), margin = 2) %>%
+  as.data.frame() %>% 
+  filter(abortoDummy2018 == "No justifica") %>% 
+  ggplot(aes(x = edad_intervalos, y = Freq, fill = abortoDummy2018)) + 
+  geom_bar(position = "stack", stat = "identity") + 
+  labs(title = 'Encuestados hombres',
+       x = 'Grupo etario', 
+       y = '% del total') +
+  geom_text(aes(label = paste(round(Freq * 100, 2), "%")), 
+            size = 4,
+            hjust = 2) + 
+  scale_x_discrete(labels = edad_intervalos_labs) +
+  theme_bw() + 
+  theme(legend.position = "none",
+        panel.grid = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_blank()) + 
+  coord_flip()
+
+# prop.table(table(data_aborto2018_Woman %>% select(abortoDummy2018, edad_intervalos)), margin = 2) %>% as.data.frame() %>% filter(abortoDummy2018 == "No justifica")
+
+
+fig4b<-
+prop.table(table(data_aborto2018_Woman %>% select(abortoDummy2018, edad_intervalos)), margin = 2) %>%
+  as.data.frame() %>% 
+  filter(abortoDummy2018 == "No justifica") %>% 
+  ggplot(aes(x = edad_intervalos, y = Freq, fill = abortoDummy2018)) + 
+  geom_bar(position = "stack", stat = "identity") +
+  labs(title = 'Encuestadas mujeres',
+       x = 'Grupo etario', 
+       y = '% del total') +
+  geom_text(aes(label = paste(round(Freq * 100, 2), "%")), size=4) + 
+  scale_x_discrete(labels = edad_intervalos_labs) + 
+  theme_bw() + 
+  theme(legend.position = "none",
+        panel.grid = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_blank()) + 
+  coord_flip()
+
+fig4a + fig4b +
+  plot_layout(ncol = 2) +
+  plot_annotation(title = 'No justificación del aborto por edad del encuestado',
+                  subtitle = 'Datos de la WVS',
+                  caption = 'Encuesta Mundial de Valores, ronda 2018 en Ecuador.')
+
+ggsave("images/fig4.png", device = "png", width = 12.5, height = 7, dpi = 900)
+
+
+religion_labs <- c("No creyente", "Catolico", "Protestante", "Ortodoxo", "Otro Cristiano", "Otro")
+names(religion_labs) <- c("0", "1", "2", "3", "8", "9")
+
+# prop.table(table(data_aborto2018_Man %>% select(abortoDummy2018, religion)), margin = 2) %>% as.data.frame() %>% filter(abortoDummy2018 == "No justifica")
+
+fig5a <-
+prop.table(table(data_aborto2018_Man %>% select(abortoDummy2018, religion)), margin = 2) %>% 
+  as.data.frame() %>% 
+  filter(abortoDummy2018 == "No justifica") %>% 
+  ggplot(aes(x = religion, y = Freq, fill = abortoDummy2018)) + 
+  geom_bar(position = "stack", stat = "identity") + 
+  labs(title = 'Encuestados hombres',
+       x = 'Religión', 
+       y = '% del total') +
+  geom_text(aes(label = paste(round(Freq * 100, 2), "%")), 
+            size = 4,
+            hjust = 2) + 
+  scale_x_discrete(labels = religion_labs) + 
+  theme_bw() + 
+  theme(legend.position = "none",
+        panel.grid = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_blank()) + 
+  coord_flip()
+
+fig5b <-
+prop.table(table(data_aborto2018_Woman %>% select(abortoDummy2018, religion)), margin = 2) %>%
+  as.data.frame() %>% 
+  filter(abortoDummy2018 == "No justifica") %>% 
+  ggplot(aes(x = religion, y = Freq, fill = abortoDummy2018)) + 
+  geom_bar(position = "stack", stat = "identity") + 
+  labs(title = 'Encuestadas mujeres',
+       x = 'Religión', 
+       y = '% del total') +
+  geom_text(aes(label = paste(round(Freq * 100, 2), "%")), size=4) + 
+  scale_x_discrete(labels = religion_labs) + 
+  theme_bw() + 
+  theme(legend.position = "none",
+        panel.grid = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_blank()) + 
+  coord_flip()
+
+fig5a + fig5b +
+  plot_layout(ncol = 2) +
+  plot_annotation(title = 'No justificación del aborto por religión del encuestado',
+                  subtitle = 'Datos de la WVS',
+                  caption = 'Encuesta Mundial de Valores, ronda 2018 en Ecuador.')
+
+ggsave("images/fig5.png", device = "png", width = 12.5, height = 7, dpi = 900)
+
