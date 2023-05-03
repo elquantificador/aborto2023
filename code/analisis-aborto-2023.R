@@ -69,6 +69,14 @@ data_aborto2013$abortoDummy2013 <- unlist(acumulador2013)
 
 # Gráficos ----------------------------------------------------------------
 
+caption <-
+  'Los porcentajes muestran la proporción de personas que no justifican el aborto, de acuerdo con las preguntas correspondientes de la WVS 2018, que puntúan del 1 al 10 el grado de justificación del aborto 
+para los encuestados, en donde 1 es rechazo absoluto y 10 justificación absoluta. Se define la no justificación como respuestas del 1 al 6.'
+
+caption1 <-
+  'Los porcentajes muestran la proporción de personas que justifican y no justifican el aborto, de acuerdo con las preguntas correspondientes de la WVS 2013 y 2018, que puntúan del 1 al 10 el grado de justificación del aborto 
+para los encuestados, en donde 1 es rechazo absoluto y 10 justificación absoluta. Se define la no justificación como respuestas del 1 al 6 y justificación del 7 al 10.'
+
 # 2013
 
 grafico_2013 <-
@@ -92,7 +100,7 @@ grafico_2013 <-
         axis.title = element_blank(),
         axis.text.y = element_blank(),
         panel.grid = element_blank(),
-        plot.caption = element_text(hjust = 0.5))
+        plot.caption = element_text(hjust = 0))
 
 # 2018
 
@@ -114,15 +122,20 @@ grafico_2018 <-
         axis.title = element_blank(),
         axis.text.y = element_blank(),
         panel.grid = element_blank(),
-        plot.caption = element_text(hjust = 0.5))
+        plot.caption = element_text(hjust = 0))
 
 grafico_2013 + grafico_2018 +
   plot_layout(ncol = 2) +
-  plot_annotation(title = 'Justificación del Aborto en Ecuador',
-                  subtitle = 'Datos de la WVS',
-                  caption = 'Encuesta Mundial de Valores, rondas 2013 y 2018 en Ecuador.')
+  plot_annotation(title = 'Justificación y no justificación del aborto en Ecuador',
+                  subtitle = 'Datos de la WVS para Ecuador, rondas 2013 y 2018',
+                  caption = caption1,
+                  theme = theme(plot.caption = element_text(hjust = 0)))
 
-ggsave("images/fig1.png", device = "png", width = 12.5, height = 7, dpi = 900)
+ggsave("images/fig1.png", 
+       device = "png", 
+       width = 12.5, 
+       height = 7, 
+       dpi = 900)
 
 sexo_labs <- c("Hombre", "Mujer")
 
@@ -152,16 +165,20 @@ prop.table(table(data_aborto2018 %>% select(abortoDummy2018, sexo)), margin = 2)
         axis.ticks.y = element_blank(),
         axis.text.x = element_blank(),
         panel.grid = element_blank(),
-        plot.caption = element_text(hjust = 0.5),
+        plot.caption = element_text(hjust = 0),
         legend.position = 'none') + 
   labs(
     x = 'Sexo',
     y = '% de la población',
-    title = 'Justificación del aborto por sexo del encuestado',
-    subtitle = 'Encuestra Mundial de Valores 2018'
+    title = 'No justificación del aborto por sexo del encuestado',
+    subtitle = 'Encuestra Mundial de Valores 2018',
+    caption = caption
   )
 
-ggsave("images/fig2.png", device = "png", width = 12.5, height = 7, dpi = 900)
+ggsave("images/fig2.png", device = "png", 
+       width = 12.5, 
+       height = 7, 
+       dpi = 900)
 
 data_aborto2018_Man <- data_aborto2018 %>%
   filter(sexo == 1)
@@ -222,8 +239,9 @@ prop.table(table(data_aborto2018_Woman %>% select(abortoDummy2018, nivel_educati
 fig3a + fig3b +
   plot_layout(ncol = 2) +
   plot_annotation(title = 'No justificación del aborto por nivel educativo',
-                  subtitle = 'Datos de la WVS',
-                  caption = 'Encuesta Mundial de Valores, ronda 2018 en el Ecuador.')
+                  subtitle = 'Datos de la WVS 2018',
+                  caption = caption,
+                  theme = theme(plot.caption = element_text(hjust = 0)))
 
 ggsave("images/fig3.png", device = "png", width = 12.5, height = 7, dpi = 900)
 
@@ -256,7 +274,6 @@ prop.table(table(data_aborto2018_Man %>% select(abortoDummy2018, edad_intervalos
 
 # prop.table(table(data_aborto2018_Woman %>% select(abortoDummy2018, edad_intervalos)), margin = 2) %>% as.data.frame() %>% filter(abortoDummy2018 == "No justifica")
 
-
 fig4b<-
 prop.table(table(data_aborto2018_Woman %>% select(abortoDummy2018, edad_intervalos)), margin = 2) %>%
   as.data.frame() %>% 
@@ -278,11 +295,11 @@ prop.table(table(data_aborto2018_Woman %>% select(abortoDummy2018, edad_interval
 fig4a + fig4b +
   plot_layout(ncol = 2) +
   plot_annotation(title = 'No justificación del aborto por edad del encuestado',
-                  subtitle = 'Datos de la WVS',
-                  caption = 'Encuesta Mundial de Valores, ronda 2018 en Ecuador.')
+                  subtitle = 'Datos de la WVS 2018',
+                  caption = caption,
+                  theme = theme(plot.caption = element_text(hjust = 0)))
 
 ggsave("images/fig4.png", device = "png", width = 12.5, height = 7, dpi = 900)
-
 
 religion_labs <- c("No creyente", "Catolico", "Protestante", "Ortodoxo", "Otro Cristiano", "Otro")
 names(religion_labs) <- c("0", "1", "2", "3", "8", "9")
@@ -318,7 +335,7 @@ prop.table(table(data_aborto2018_Woman %>% select(abortoDummy2018, religion)), m
   labs(title = 'Encuestadas mujeres',
        x = 'Religión', 
        y = '% del total') +
-  geom_text(aes(label = paste(round(Freq * 100, 2), "%")), size=4) + 
+  geom_text(aes(label = paste(round(Freq * 100, 2), "%")), size = 4, hjust = 2) + 
   scale_x_discrete(labels = religion_labs) + 
   theme_bw() + 
   theme(legend.position = "none",
@@ -330,8 +347,9 @@ prop.table(table(data_aborto2018_Woman %>% select(abortoDummy2018, religion)), m
 fig5a + fig5b +
   plot_layout(ncol = 2) +
   plot_annotation(title = 'No justificación del aborto por religión del encuestado',
-                  subtitle = 'Datos de la WVS',
-                  caption = 'Encuesta Mundial de Valores, ronda 2018 en Ecuador.')
+                  subtitle = 'Datos de la WVS 2018',
+                  caption = caption,
+                  theme = theme(plot.caption = element_text(hjust = 0)))
 
 ggsave("images/fig5.png", device = "png", width = 12.5, height = 7, dpi = 900)
 
