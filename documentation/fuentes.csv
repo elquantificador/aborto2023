@@ -1,0 +1,3 @@
+source_name,institution,period,official_url,downloaded_file,script
+Encuesta Mundial de Valores (WVS) ronda 6 Ecuador,World Values Survey Association,2013,https://www.worldvaluessurvey.org/,[temporal] primer archivo del zip descargado de https://github.com/joyceliss/LIDE_ESPOL_Joyce_Sarmiento/raw/main/Base%20de%20datos.zip,code/analisis-aborto-2023.R
+Encuesta Mundial de Valores (WVS) ronda 7 Ecuador,World Values Survey Association,2018,https://www.worldvaluessurvey.org/,[temporal] segundo archivo del zip descargado de https://github.com/joyceliss/LIDE_ESPOL_Joyce_Sarmiento/raw/main/Base%20de%20datos.zip,code/analisis-aborto-2023.R
