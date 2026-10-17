@@ -8,49 +8,74 @@ repositorios.
 
 - **Título:** Revisitando el aborto: ¿qué piensan los ecuatorianos?
 - **Descripción del repositorio:** Repositorio del artículo Revisitando el aborto: ¿qué piensan los ecuatorianos? por Joyce Sarmiento.
-- **Autoría:** [COMPLETAR: nombres, igual que en el sitio]
-- **Fecha de publicación:** [COMPLETAR: AAAA-MM-DD]
-- **Artículo publicado:** [COMPLETAR: enlace a elquantificador.org]
-- **Categoría:** [COMPLETAR: Economía, Política, Salud, Educación o Valores y
-  comportamiento]
-- **Edición:** [COMPLETAR: por ejemplo, Julio-Diciembre 2026]
+- **Autoría:** Joyce Sarmiento
+- **Fecha de publicación:** 2023-05-02
+- **Artículo publicado:** https://elquantificador.org/post/valores/2023-05-02-revisitando-el-aborto-que-piensan-los-ecuatorianos-en-2023/
+- **Categoría:** Valores y comportamiento
+- **Edición:** Febrero - Agosto 2023
 
 ## Estado
 
-[COMPLETAR: en preparación, en revisión editorial o publicado. Anota qué falta
-para cerrar el artículo.]
+Publicado el 2023-05-02.
 
 ## Pregunta y alcance
 
-[COMPLETAR: dos o tres oraciones con la pregunta, el periodo, la cobertura
-geográfica y la unidad de análisis.]
+El artículo pregunta qué piensan los ecuatorianos sobre el aborto y compara la
+opinión de 2013 con la de 2018, tras la despenalización del aborto por
+violación. Usa las rondas de 2013 y 2018 de la Encuesta Mundial de Valores
+(WVS) para Ecuador, con cobertura nacional y personas encuestadas como unidad de
+análisis. Para 2018 desagrega la no justificación del aborto por sexo, nivel
+educativo, grupo de edad y religión.
 
 ## Requisitos
 
-- R [COMPLETAR: versión, por ejemplo 4.5.x].
-- Paquetes de R: [COMPLETAR: lista en orden alfabético].
+- R: no documentada en el repositorio.
+- Paquetes de R: ggplot2, knitr (para renderizar el `.Rmd`), patchwork,
+  readxl, tidyverse.
 
 ## Fuentes de datos
 
 | Fuente | Institución | Periodo | Acceso | Script |
 |---|---|---|---|---|
-| [COMPLETAR] | [COMPLETAR] | [COMPLETAR] | [COMPLETAR: descarga automática o manual] | `code/cleaning/00_download_fuente.R` |
+| Encuesta Mundial de Valores (WVS), ronda 6, Ecuador | World Values Survey Association | 2013 | Descarga automática de un `.zip` con exportaciones en Excel alojado en el repositorio de GitHub de la autora (`joyceliss/LIDE_ESPOL_Joyce_Sarmiento`) | `code/analisis-aborto-2023.R` |
+| Encuesta Mundial de Valores (WVS), ronda 7, Ecuador | World Values Survey Association | 2018 | Misma descarga automática del `.zip` anterior | `code/analisis-aborto-2023.R` |
 
-Si alguna fuente no permite descarga automática, explica aquí cómo obtenerla y
-dónde colocarla en `data/raw/`.
+El script descarga las dos bases desde ese `.zip` alojado por la autora, no
+desde el sitio oficial de la WVS (https://www.worldvaluessurvey.org/, enlace
+general que ni el repositorio ni el artículo citan). El `.zip` no forma parte de
+este repositorio. Se descomprime en una carpeta temporal, así que no hay que
+colocar archivos en `data/raw/`.
 
 ## Salidas
 
-- `outputs/tables/[COMPLETAR].csv`: [COMPLETAR: qué contiene].
-- `outputs/graphs/[COMPLETAR].png`: [COMPLETAR: qué muestra].
-- `article/images/graficoN.png`: copias numeradas según el orden del texto.
+- `images/fig1.png`: justificación y no justificación del aborto en Ecuador,
+  WVS 2013 y 2018.
+- `images/fig2.png`: no justificación del aborto por sexo de la persona
+  encuestada, WVS 2018.
+- `images/fig3.png`: no justificación del aborto por nivel educativo y sexo,
+  WVS 2018.
+- `images/fig4.png`: no justificación del aborto por grupo de edad y sexo,
+  WVS 2018.
+- `images/fig5.png`: no justificación del aborto por religión y sexo, WVS 2018.
+- `report/aborto-2023.docx` y `report/aborto-2023.html`: versiones renderizadas
+  de `report/aborto-2023.Rmd`.
 
 ## Cómo replicar en este repositorio
 
-Este repositorio conserva sus instrucciones originales en la sección
-"README anterior". Si todavía no tiene `MASTER.R`, sigue esas instrucciones.
-Cuando se migre a la estructura estándar, reemplaza esta sección por los pasos
-de `MASTER.R`.
+Este repositorio no tiene `MASTER.R`. El orden surge del README anterior y de
+los scripts:
+
+1. Clona o descarga el repositorio y ábrelo con `aborto2023.Rproj`, de modo que
+   la raíz del proyecto sea el directorio de trabajo (el script guarda en
+   `images/fig1.png` y siguientes con rutas relativas a esa raíz).
+2. Ejecuta `code/analisis-aborto-2023.R`. Instala los paquetes que falten,
+   descarga y lee las bases de la WVS 2013 y 2018, construye la variable
+   "Justifica" / "No justifica" (respuestas 1 a 6 y 7 a 10) y guarda las cinco
+   figuras en `images/`. Requiere conexión a internet.
+3. Renderiza `report/aborto-2023.Rmd` para regenerar el texto del artículo
+   (Word y HTML). El `.Rmd` solo inserta las figuras de `images/`, así que
+   depende del paso 2. Para compilar en PDF hace falta LaTeX, opcional según el
+   README anterior.
 
 ## README anterior
 
